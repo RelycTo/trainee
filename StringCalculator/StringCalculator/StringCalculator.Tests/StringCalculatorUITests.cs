@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 
 namespace StringCalculator.Tests
 {
@@ -46,7 +41,6 @@ namespace StringCalculator.Tests
             mockConsoleWrapper.Verify(w => w.ReadKey(), Times.AtLeast(3));
             mockConsoleWrapper.Verify(w => w.Write("Sum: 8"), Times.Once);
         }
-
 
         [Fact]
         public void Run_CommaSeparatedNumbers_ReturnNumbersSum()
