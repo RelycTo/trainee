@@ -18,7 +18,7 @@ namespace StringCalculator.Tests
 
             ui.Run();
 
-            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.AtLeast(2));
+            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.Exactly(2));
 			mockConsoleWrapper.Verify(w => w.Write("Sum: 0"), Times.Once);
 		}
 
@@ -38,7 +38,7 @@ namespace StringCalculator.Tests
 
             ui.Run();
 
-            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.AtLeast(3));
+            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.Exactly(3));
             mockConsoleWrapper.Verify(w => w.Write("Sum: 8"), Times.Once);
         }
 
@@ -65,7 +65,7 @@ namespace StringCalculator.Tests
 
             ui.Run();
 
-            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.AtLeast(7));
+            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.Exactly(7));
             mockConsoleWrapper.Verify(w => w.Write("Sum: 13"), Times.Once);
         }
     }
