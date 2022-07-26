@@ -1,18 +1,22 @@
 ﻿namespace StringCalculator
 {
-    public class ConsoleWrapper : IConsoleWrapper
+    public class ConsoleWrapper
     {
-        public ConsoleKeyInfo ReadKey()
+        public virtual ConsoleKeyInfo ReadKey()
         {
             return Console.ReadKey();
         }
 
-        public void WriteLine(string s)
+        public virtual void WriteLine(string s)
         {
             Console.WriteLine(s);
         }
+        public virtual void Write(string s)
+        {
+            Console.Write(s);
+        }
 
-        public void WriteLine()
+        public virtual void WriteLine()
         {
             Console.WriteLine();
         }

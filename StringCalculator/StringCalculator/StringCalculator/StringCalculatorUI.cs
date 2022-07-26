@@ -4,9 +4,9 @@ namespace StringCalculator
 {
     public class StringCalculatorUI
     {
-        private StringCalculator _calculator;
-        private readonly IConsoleWrapper _consoleWrapper;
-        public StringCalculatorUI(IConsoleWrapper consoleWrapper)
+        private readonly StringCalculator _calculator;
+        private readonly ConsoleWrapper _consoleWrapper;
+        public StringCalculatorUI(ConsoleWrapper consoleWrapper)
         {
             _calculator = new StringCalculator();
             _consoleWrapper = consoleWrapper;
@@ -34,9 +34,10 @@ namespace StringCalculator
                     if (current.Key == ConsoleKey.E)
                     {
                         _consoleWrapper.WriteLine();
-                        _consoleWrapper.WriteLine("Sum: " + _calculator.Add(input.ToString()
+                        _consoleWrapper.Write("Sum: " + _calculator.Add(input.ToString()
                             .Replace("\r", string.Empty)
                             .TrimEnd('E')));
+                        _consoleWrapper.WriteLine();
                         input.Clear();
                     }
                 }

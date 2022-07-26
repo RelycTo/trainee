@@ -3,76 +3,76 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 
 namespace StringCalculator.Tests
 {
     public class StringCalculatorUITests
     {
-        internal class ConsoleWrapperStub : IConsoleWrapper
-        {
-            private IList<ConsoleKey> _keyCollection;
-            private int _keyIndex = 0;
-
-            public ConsoleWrapperStub(IList<ConsoleKey> keyCollection)
-            {
-                _keyCollection = keyCollection;
-            }
-
-            public string Output { get; private set; }
-
-            public ConsoleKeyInfo ReadKey()
-            {
-                var result = _keyCollection[_keyIndex];
-                _keyIndex++;
-                return new ConsoleKeyInfo((char)result, result, false, false, false);
-            }
-
-            public void WriteLine(string s)
-            {
-                Output += s;
-            }
-
-            public void WriteLine()
-            {
-                //throw new NotImplementedException();
-            }
-        }
-
         [Fact]
-        public void EmptyInputReturnZero()
+        public void Run_Empty_ReturnZero()
         {
-            var stub = new ConsoleWrapperStub(new List<ConsoleKey> { ConsoleKey.E, ConsoleKey.Escape });
-            var ui = new StringCalculatorUI(stub);
+            const ConsoleKey endSymbol = ConsoleKey.E;
+            const ConsoleKey exitSymbol = ConsoleKey.Escape;
+            var mockConsoleWrapper = new Mock<ConsoleWrapper>();
+            mockConsoleWrapper
+                .SetupSequence(w => w.ReadKey())
+                .Returns(new ConsoleKeyInfo((char)endSymbol, endSymbol, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)exitSymbol, exitSymbol, false, false, false));
+            var ui = new StringCalculatorUI(mockConsoleWrapper.Object);
 
             ui.Run();
 
-			Assert.Equal("Sum: 0", stub.Output);
+            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.AtLeast(2));
+			mockConsoleWrapper.Verify(w => w.Write("Sum: 0"), Times.Once);
 		}
 
         [Fact]
-        public void SingleNumberInputReturnNumber()
+        public void Run_SingleNumber_ReturnNumber()
         {
-            var stub = new ConsoleWrapperStub(new List<ConsoleKey> { ConsoleKey.D8, ConsoleKey.E, ConsoleKey.Escape });
-            var ui = new StringCalculatorUI(stub);
+            const ConsoleKey endSymbol = ConsoleKey.E;
+            const ConsoleKey exitSymbol = ConsoleKey.Escape;
+            const ConsoleKey number = ConsoleKey.D8;
+            var mockConsoleWrapper = new Mock<ConsoleWrapper>();
+            mockConsoleWrapper
+                .SetupSequence(w => w.ReadKey())
+                .Returns(new ConsoleKeyInfo((char)number, number, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)endSymbol, endSymbol, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)exitSymbol, exitSymbol, false, false, false));
+            var ui = new StringCalculatorUI(mockConsoleWrapper.Object);
 
             ui.Run();
 
-            Assert.Equal("Sum: 8", stub.Output);
+            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.AtLeast(3));
+            mockConsoleWrapper.Verify(w => w.Write("Sum: 8"), Times.Once);
         }
 
 
         [Fact]
-        public void CommaSeparatedNumbersInputReturnNumbersSum()
+        public void Run_CommaSeparatedNumbers_ReturnNumbersSum()
         {
-            var stub = new ConsoleWrapperStub(new List<ConsoleKey> {
-                ConsoleKey.D8, (ConsoleKey)44, ConsoleKey.D5, ConsoleKey.E, ConsoleKey.Escape
-            });
-            var ui = new StringCalculatorUI(stub);
+            const ConsoleKey endSymbol = ConsoleKey.E;
+            const ConsoleKey exitSymbol = ConsoleKey.Escape;
+            const ConsoleKey number1 = ConsoleKey.D8;
+            const ConsoleKey number2 = ConsoleKey.D4;
+            const ConsoleKey number3 = ConsoleKey.D1;
+            const ConsoleKey commaKey = (ConsoleKey)44;
+            var mockConsoleWrapper = new Mock<ConsoleWrapper>();
+            mockConsoleWrapper
+                .SetupSequence(w => w.ReadKey())
+                .Returns(new ConsoleKeyInfo((char)number1, number1, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)commaKey, commaKey, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)number2, number2, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)commaKey, commaKey, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)number3, number3, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)endSymbol, endSymbol, false, false, false))
+                .Returns(new ConsoleKeyInfo((char)exitSymbol, exitSymbol, false, false, false));
+            var ui = new StringCalculatorUI(mockConsoleWrapper.Object);
 
             ui.Run();
 
-            Assert.Equal("Sum: 13", stub.Output);
+            mockConsoleWrapper.Verify(w => w.ReadKey(), Times.AtLeast(7));
+            mockConsoleWrapper.Verify(w => w.Write("Sum: 13"), Times.Once);
         }
-
     }
 }

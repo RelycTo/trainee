@@ -2,9 +2,9 @@
 {
     internal class Parser
     {
-        private string _input;
-        private List<string> _delimiters;
-        private bool _isCustomDelimiterExist;
+        private readonly string _input;
+        private readonly List<string> _delimiters;
+        private readonly bool _isCustomDelimiterExist;
 
         public Parser(string input)
         {
@@ -27,7 +27,7 @@
 
         private static IEnumerable<string> GetCustomDelimiters(string delimiters, int position)
         {
-            var result = Array.Empty<string>();
+            string[] result;
             var part = GetCustomDelimitersSubString(delimiters, position);
             if (!part.Contains('['))
             {
@@ -63,7 +63,7 @@
         private static IEnumerable<int> GetNumbers(string numbers, int position, IEnumerable<string> delimiters)
         {
             var result = new List<int>();
-            return numbers.Substring(position)
+            return numbers[position..]
                 .Split(delimiters.ToArray(), StringSplitOptions.TrimEntries)
                 .Select(t => Convert.ToInt32(t));
         }

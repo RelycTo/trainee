@@ -3,9 +3,9 @@ namespace StringCalculator.Tests
     public class StringCalculatorTests
     {
         [Fact]
-        public void EmptyNumbersReturnZero()
+        public void Add_EmptyString_ReturnZero()
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
             var actual = calculator.Add(string.Empty);
 
@@ -13,62 +13,40 @@ namespace StringCalculator.Tests
         }
 
         [Fact]
-        public void OneNumberSumReturnNumber()
+        public void Add_OneNumber_ReturnNumber()
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
             var actual = calculator.Add("20");
 
             Assert.Equal(20, actual);
         }
 
-        [Theory]
-        [InlineData("&")]
-        [InlineData("v")]
-        [InlineData("#")]
-        [InlineData("%^&")]
-        [InlineData("%,^&")]
-        [InlineData("c,^&")]
-        [InlineData("11,\n")]
-        public void IncorrectFormatNumberSumThrowsException(string input)
+        [Fact]
+        public void Add_NumberWithLineBreak_ThrowFormatException()
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
-            Assert.Throws<FormatException>(() => calculator.Add(input));
+            Assert.Throws<FormatException>(() => calculator.Add("11,\n"));
         }
 
-        [Theory]
-        [InlineData("2,3", 5)]
-        [InlineData("135,219", 354)]
-        public void TwoCommaSeparatedNumbersSumReturnNumbersSum(string input, int expected)
+        [Fact]
+        public void Add_TwoCommaSeparatedNumbers_ReturnNumbersSum()
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
-            var actual = calculator.Add(input);
+            var actual = calculator.Add("2,3");
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(5, actual);
         }
 
         [Theory]
         [InlineData("2\n3\n4", 9)]
         [InlineData("11,21\n35", 67)]
         [InlineData("11\n23,21\n35", 90)]
-        public void MixDelimitersSeparatedNumbersSumReturnNumbersSum(string input, int expected)
+        public void Add_MixDelimitersSeparatedNumbers_ReturnNumbersSum(string input, int expected)
         {
-            var calculator = new StringCalculator();
-
-            var actual = calculator.Add(input);
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Theory]
-        [InlineData("//;\n1;2", 3)]
-        [InlineData("//|\n1|2", 3)]
-        [InlineData("//&\n1&2", 3)]
-        public void CustomDelimiterSeparatedNumbersSumReturnNumbersSum(string input, int expected)
-        {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
             var actual = calculator.Add(input);
 
@@ -76,9 +54,19 @@ namespace StringCalculator.Tests
         }
 
         [Fact]
-        public void NegativeNumbersSumThrowsExceptionWithNotAllowedNumbers()
+        public void Add_CustomDelimiterSeparatedNumbers_ReturnNumbersSum()
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
+
+            var actual = calculator.Add("//;\n1;2");
+
+            Assert.Equal(3, actual);
+        }
+
+        [Fact]
+        public void Add_NegativeNumbers_ThrowExceptionWithNotAllowedNumbers()
+        {
+            var calculator = CreateCalculator();
 
             var exception = Assert.Throws<ArgumentException>(() => calculator.Add("-1, -2, -4"));
             Assert.Contains("-1, -2, -4", exception.Message);
@@ -86,10 +74,10 @@ namespace StringCalculator.Tests
 
         [Theory]
         [InlineData("1,1001,3", 4)]
-        [InlineData("10,1010,5", 15)]
-        public void GreaterThan1000NumbersSumIgnoredInSum(string input, int expected)
+        [InlineData("1010,1200", 0)]
+        public void Add_GreaterThan1000Numbers_ReturnSumWithoutThem(string input, int expected)
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
             var actual = calculator.Add(input);
 
@@ -97,36 +85,35 @@ namespace StringCalculator.Tests
         }
 
         [Fact]
-        public void CustomDelimiterGreaterThenOneSymbolWithoutBracketsNumbersSumThrowsException()
+        public void Add_CustomDelimiterGreaterThenOneSymbolWithoutBrackets_ThrowException()
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
             Assert.Throws<ArgumentException>(() => calculator.Add("//$%^\n1$%^5"));
         }
 
-        [Theory]
-        [InlineData("//[;;;]\n1;;;2", 3)]
-        [InlineData("//[||||]\n1||||2", 3)]
-        [InlineData("//[&&]\n1&&2", 3)]
-        public void CustomMultipleSymbolDelimiterSeparatedNumbersSumReturnNumbersSum(string input, int expected)
+        [Fact]
+        public void Add_CustomMultipleSymbolDelimiterSeparatedNumbers_ReturnNumbersSum()
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
-            var actual = calculator.Add(input);
+            var actual = calculator.Add("//[;;;]\n1;;;2");
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(3, actual);
         }
+
         [Theory]
         [InlineData("//[;][|][%]\n1;2%5|3", 11)]
         [InlineData("//[||][#]\n1||2#1", 4)]
-        public void CustomMultipleSymbolMultipleDelimiterSeparatedNumbersSumReturnNumbersSum(string input, int expected)
+        public void Add_CustomMultipleSymbolMultipleDelimiterSeparated_ReturnNumbersSum(string input, int expected)
         {
-            var calculator = new StringCalculator();
+            var calculator = CreateCalculator();
 
             var actual = calculator.Add(input);
 
             Assert.Equal(expected, actual);
         }
 
+        private StringCalculator CreateCalculator() => new();
     }
 }
