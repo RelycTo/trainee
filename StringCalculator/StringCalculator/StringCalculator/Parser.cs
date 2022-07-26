@@ -62,7 +62,6 @@
 
         private static IEnumerable<int> GetNumbers(string numbers, int position, IEnumerable<string> delimiters)
         {
-            var result = new List<int>();
             return numbers[position..]
                 .Split(delimiters.ToArray(), StringSplitOptions.TrimEntries)
                 .Select(t => Convert.ToInt32(t));

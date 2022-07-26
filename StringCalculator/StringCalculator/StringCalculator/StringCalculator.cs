@@ -2,13 +2,6 @@
 {
     public class StringCalculator
     {
-        private List<string> _delimiters;
-
-        public StringCalculator()
-        {
-            _delimiters = new List<string> { ",", "\n" };
-        }
-
         public int Add(string numbers)
         {
             var delimiter = string.Empty;
