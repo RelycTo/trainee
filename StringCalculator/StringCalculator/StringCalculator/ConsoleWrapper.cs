@@ -2,23 +2,13 @@
 
 public class ConsoleWrapper
 {
-    public virtual ConsoleKeyInfo ReadKey()
+    public virtual string ReadLine()
     {
-        return Console.ReadKey();
+        return Console.ReadLine();
     }
 
     public virtual void WriteLine(string s)
     {
         Console.WriteLine(s);
-    }
-
-    public virtual void Write(string s)
-    {
-        Console.Write(s);
-    }
-
-    public virtual void WriteLine()
-    {
-        Console.WriteLine();
     }
 }

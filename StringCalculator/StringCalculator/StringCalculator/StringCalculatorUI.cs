@@ -14,36 +14,19 @@ public class StringCalculatorUI
 
     public void Run()
     {
-        var input = new StringBuilder();
-        Console.WriteLine("Enter comma or row separated numbers ('E' to complete input and esc to exit):");
         while (true)
         {
             try
             {
-                var current = _consoleWrapper.ReadKey();
-                if (current.Key == ConsoleKey.Escape) break;
+                _consoleWrapper.WriteLine("Enter comma separated numbers (enter to exit):");
+                var input = _consoleWrapper.ReadLine();
+                if (string.IsNullOrEmpty(input))
+                    break;
 
-                if (current.Key == ConsoleKey.Enter)
-                {
-                    input.Append('\n');
-                    _consoleWrapper.WriteLine();
-                }
-
-                input.Append(current.KeyChar);
-
-                if (current.Key == ConsoleKey.E)
-                {
-                    _consoleWrapper.WriteLine();
-                    _consoleWrapper.Write("Sum: " + _calculator.Add(input.ToString()
-                        .Replace("\r", string.Empty)
-                        .TrimEnd('E')));
-                    _consoleWrapper.WriteLine();
-                    input.Clear();
-                }
+                _consoleWrapper.WriteLine("Sum: " + _calculator.Add(input));
             }
             catch (Exception e)
             {
-                input.Clear();
                 _consoleWrapper.WriteLine(e.Message);
             }
         }

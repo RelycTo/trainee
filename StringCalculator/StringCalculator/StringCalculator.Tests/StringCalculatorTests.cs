@@ -72,16 +72,14 @@ public class StringCalculatorTests
         Assert.Contains("-1, -2, -4", exception.Message);
     }
 
-    [Theory]
-    [InlineData("1,1001,3", 4)]
-    [InlineData("1010,1200", 0)]
-    public void Add_GreaterThan1000Numbers_ReturnSumWithoutThem(string input, int expected)
+    [Fact]
+    public void Add_GreaterThan1000Numbers_ReturnSumWithoutThem()
     {
         var calculator = CreateCalculator();
 
-        var actual = calculator.Add(input);
+        var actual = calculator.Add("1,1001,3");
 
-        Assert.Equal(expected, actual);
+        Assert.Equal(4, actual);
     }
 
     [Fact]
@@ -102,16 +100,14 @@ public class StringCalculatorTests
         Assert.Equal(3, actual);
     }
 
-    [Theory]
-    [InlineData("//[;][|][%]\n1;2%5|3", 11)]
-    [InlineData("//[||][#]\n1||2#1", 4)]
-    public void Add_CustomMultipleSymbolMultipleDelimiterSeparated_ReturnNumbersSum(string input, int expected)
+    [Fact]
+    public void Add_CustomMultipleSymbolMultipleDelimiterSeparated_ReturnNumbersSum()
     {
         var calculator = CreateCalculator();
 
-        var actual = calculator.Add(input);
+        var actual = calculator.Add("//[||][#]\n1||2#1");
 
-        Assert.Equal(expected, actual);
+        Assert.Equal(4, actual);
     }
 
     private StringCalculator CreateCalculator() => new();
